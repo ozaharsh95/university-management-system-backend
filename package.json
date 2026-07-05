@@ -18,6 +18,7 @@
     "@arcjet/inspect": "^1.6.1",
     "@arcjet/node": "^1.6.1",
     "@neondatabase/serverless": "^1.1.0",
+    "apminsight": "^5.5.0",
     "better-auth": "^1.6.23",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
