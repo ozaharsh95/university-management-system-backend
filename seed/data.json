@@ -286,7 +286,11 @@
       "inviteCode": "cs101-a",
       "subjectCode": "CS101",
       "teacherId": "teacher_1",
-      "bannerUrl": "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80"
+      "bannerUrl": "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80",
+      "schedules": [
+        { "day": "Monday", "startTime": "09:00", "endTime": "10:30" },
+        { "day": "Wednesday", "startTime": "09:00", "endTime": "10:30" }
+      ]
     },
     {
       "name": "Programming Fundamentals - Section B",
@@ -296,7 +300,11 @@
       "inviteCode": "cs102-b",
       "subjectCode": "CS102",
       "teacherId": "teacher_4",
-      "bannerUrl": "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80"
+      "bannerUrl": "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80",
+      "schedules": [
+        { "day": "Tuesday", "startTime": "10:00", "endTime": "11:30" },
+        { "day": "Thursday", "startTime": "10:00", "endTime": "11:30" }
+      ]
     },
     {
       "name": "Web Development Bootcamp",
@@ -306,7 +314,12 @@
       "inviteCode": "cs201-bootcamp",
       "subjectCode": "CS201",
       "teacherId": "teacher_2",
-      "bannerUrl": "https://images.unsplash.com/photo-1498079022511-d15614cb1c02?auto=format&fit=crop&w=1200&q=80"
+      "bannerUrl": "https://images.unsplash.com/photo-1498079022511-d15614cb1c02?auto=format&fit=crop&w=1200&q=80",
+      "schedules": [
+        { "day": "Monday", "startTime": "13:00", "endTime": "15:00" },
+        { "day": "Wednesday", "startTime": "13:00", "endTime": "15:00" },
+        { "day": "Friday", "startTime": "13:00", "endTime": "15:00" }
+      ]
     },
     {
       "name": "Databases - Practical",
@@ -316,7 +329,11 @@
       "inviteCode": "cs202-practical",
       "subjectCode": "CS202",
       "teacherId": "teacher_5",
-      "bannerUrl": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80"
+      "bannerUrl": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80",
+      "schedules": [
+        { "day": "Tuesday", "startTime": "14:00", "endTime": "15:30" },
+        { "day": "Thursday", "startTime": "14:00", "endTime": "15:30" }
+      ]
     },
     {
       "name": "Data Structures - Section A",
@@ -326,7 +343,11 @@
       "inviteCode": "cs301-a",
       "subjectCode": "CS301",
       "teacherId": "teacher_3",
-      "bannerUrl": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80"
+      "bannerUrl": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80",
+      "schedules": [
+        { "day": "Monday", "startTime": "11:00", "endTime": "12:30" },
+        { "day": "Wednesday", "startTime": "11:00", "endTime": "12:30" }
+      ]
     },
     {
       "name": "Software Engineering Studio",
@@ -336,7 +357,10 @@
       "inviteCode": "cs401-studio",
       "subjectCode": "CS401",
       "teacherId": "teacher_1",
-      "bannerUrl": "https://images.unsplash.com/photo-1485217988980-11786ced9454?auto=format&fit=crop&w=1200&q=80"
+      "bannerUrl": "https://images.unsplash.com/photo-1485217988980-11786ced9454?auto=format&fit=crop&w=1200&q=80",
+      "schedules": [
+        { "day": "Friday", "startTime": "09:00", "endTime": "12:00" }
+      ]
     },
     {
       "name": "Calculus I - Morning",
@@ -346,7 +370,12 @@
       "inviteCode": "math101-morning",
       "subjectCode": "MATH101",
       "teacherId": "teacher_3",
-      "bannerUrl": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80"
+      "bannerUrl": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80",
+      "schedules": [
+        { "day": "Monday", "startTime": "08:30", "endTime": "10:00" },
+        { "day": "Wednesday", "startTime": "08:30", "endTime": "10:00" },
+        { "day": "Friday", "startTime": "08:30", "endTime": "10:00" }
+      ]
     },
     {
       "name": "Calculus II - Evening",
@@ -356,7 +385,11 @@
       "inviteCode": "math102-evening",
       "subjectCode": "MATH102",
       "teacherId": "teacher_4",
-      "bannerUrl": "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80"
+      "bannerUrl": "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80",
+      "schedules": [
+        { "day": "Tuesday", "startTime": "17:00", "endTime": "18:30" },
+        { "day": "Thursday", "startTime": "17:00", "endTime": "18:30" }
+      ]
     },
     {
       "name": "Linear Algebra - Section A",
@@ -366,7 +399,11 @@
       "inviteCode": "math201-a",
       "subjectCode": "MATH201",
       "teacherId": "teacher_1",
-      "bannerUrl": "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80"
+      "bannerUrl": "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80",
+      "schedules": [
+        { "day": "Tuesday", "startTime": "11:30", "endTime": "13:00" },
+        { "day": "Thursday", "startTime": "11:30", "endTime": "13:00" }
+      ]
     },
     {
       "name": "Statistics - Applied",
@@ -376,7 +413,11 @@
       "inviteCode": "math301-applied",
       "subjectCode": "MATH301",
       "teacherId": "teacher_3",
-      "bannerUrl": "https://images.unsplash.com/photo-1498079022511-d15614cb1c02?auto=format&fit=crop&w=1200&q=80"
+      "bannerUrl": "https://images.unsplash.com/photo-1498079022511-d15614cb1c02?auto=format&fit=crop&w=1200&q=80",
+      "schedules": [
+        { "day": "Monday", "startTime": "15:30", "endTime": "17:00" },
+        { "day": "Wednesday", "startTime": "15:30", "endTime": "17:00" }
+      ]
     },
     {
       "name": "Discrete Mathematics - Workshop",
@@ -386,7 +427,10 @@
       "inviteCode": "math302-workshop",
       "subjectCode": "MATH302",
       "teacherId": "teacher_5",
-      "bannerUrl": "https://images.unsplash.com/photo-1485217988980-11786ced9454?auto=format&fit=crop&w=1200&q=80"
+      "bannerUrl": "https://images.unsplash.com/photo-1485217988980-11786ced9454?auto=format&fit=crop&w=1200&q=80",
+      "schedules": [
+        { "day": "Friday", "startTime": "14:00", "endTime": "16:30" }
+      ]
     },
     {
       "name": "General Biology Lab",
@@ -396,7 +440,11 @@
       "inviteCode": "bio101-lab",
       "subjectCode": "BIO101",
       "teacherId": "teacher_1",
-      "bannerUrl": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=80"
+      "bannerUrl": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=80",
+      "schedules": [
+        { "day": "Tuesday", "startTime": "09:00", "endTime": "11:00" },
+        { "day": "Thursday", "startTime": "09:00", "endTime": "11:00" }
+      ]
     },
     {
       "name": "Human Anatomy - Section A",
@@ -406,7 +454,11 @@
       "inviteCode": "bio201-a",
       "subjectCode": "BIO201",
       "teacherId": "teacher_4",
-      "bannerUrl": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80"
+      "bannerUrl": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80",
+      "schedules": [
+        { "day": "Monday", "startTime": "14:00", "endTime": "15:30" },
+        { "day": "Wednesday", "startTime": "14:00", "endTime": "15:30" }
+      ]
     },
     {
       "name": "Microbiology - Intensive",
@@ -416,7 +468,11 @@
       "inviteCode": "bio202-intensive",
       "subjectCode": "BIO202",
       "teacherId": "teacher_5",
-      "bannerUrl": "https://images.unsplash.com/photo-1485217988980-11786ced9454?auto=format&fit=crop&w=1200&q=80"
+      "bannerUrl": "https://images.unsplash.com/photo-1485217988980-11786ced9454?auto=format&fit=crop&w=1200&q=80",
+      "schedules": [
+        { "day": "Tuesday", "startTime": "13:00", "endTime": "15:00" },
+        { "day": "Thursday", "startTime": "13:00", "endTime": "15:00" }
+      ]
     },
     {
       "name": "Genetics - Research Focus",
@@ -426,7 +482,11 @@
       "inviteCode": "bio301-research",
       "subjectCode": "BIO301",
       "teacherId": "teacher_1",
-      "bannerUrl": "https://images.unsplash.com/photo-1498079022511-d15614cb1c02?auto=format&fit=crop&w=1200&q=80"
+      "bannerUrl": "https://images.unsplash.com/photo-1498079022511-d15614cb1c02?auto=format&fit=crop&w=1200&q=80",
+      "schedules": [
+        { "day": "Wednesday", "startTime": "10:30", "endTime": "12:00" },
+        { "day": "Friday", "startTime": "10:30", "endTime": "12:00" }
+      ]
     },
     {
       "name": "Intro to Business - Evening",
@@ -436,7 +496,11 @@
       "inviteCode": "bus101-evening",
       "subjectCode": "BUS101",
       "teacherId": "teacher_2",
-      "bannerUrl": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80"
+      "bannerUrl": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80",
+      "schedules": [
+        { "day": "Monday", "startTime": "18:00", "endTime": "19:30" },
+        { "day": "Wednesday", "startTime": "18:00", "endTime": "19:30" }
+      ]
     },
     {
       "name": "Marketing Essentials - Lab",
@@ -446,7 +510,10 @@
       "inviteCode": "bus201-lab",
       "subjectCode": "BUS201",
       "teacherId": "teacher_4",
-      "bannerUrl": "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80"
+      "bannerUrl": "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80",
+      "schedules": [
+        { "day": "Tuesday", "startTime": "15:30", "endTime": "18:30" }
+      ]
     },
     {
       "name": "Finance Basics - Section A",
@@ -456,7 +523,10 @@
       "inviteCode": "bus301-a",
       "subjectCode": "BUS301",
       "teacherId": "teacher_1",
-      "bannerUrl": "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80"
+      "bannerUrl": "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80",
+      "schedules": [
+        { "day": "Thursday", "startTime": "15:30", "endTime": "18:30" }
+      ]
     }
   ],
   "enrollments": [
