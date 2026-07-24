@@ -39,6 +39,12 @@ type SeedSubject = {
   departmentCode: string;
 };
 
+type SeedSchedule = {
+  day: string;
+  startTime: string;
+  endTime: string;
+};
+
 type SeedClass = {
   name: string;
   description: string;
@@ -48,6 +54,7 @@ type SeedClass = {
   subjectCode: string;
   teacherId: string;
   bannerUrl: string;
+  schedules: SeedSchedule[];
 };
 
 type SeedEnrollment = {
@@ -221,7 +228,7 @@ const seed = async () => {
           teacherId: classItem.teacherId,
           bannerUrl: classItem.bannerUrl,
           bannerCldPubId: null,
-          schedules: [],
+          schedules: classItem.schedules,
         }));
 
         await tx

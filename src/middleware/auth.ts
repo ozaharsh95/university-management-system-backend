@@ -16,6 +16,7 @@ export const sessionMiddleware = async (
 
     if (session) {
       req.user = {
+        id: session.user.id,
         role: session.user.role as "admin" | "teacher" | "student",
       };
     }
