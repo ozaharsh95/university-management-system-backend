@@ -557,5 +557,31 @@
     { "classInviteCode": "bio301-research", "studentId": "student_10" },
     { "classInviteCode": "math301-applied", "studentId": "student_11" },
     { "classInviteCode": "cs202-practical", "studentId": "student_12" }
+  ],
+  "announcements": [
+    {
+      "title": "Welcome to the New Academic Year",
+      "content": "We are excited to welcome all students and faculty back to campus. Have a great semester!",
+      "category": "general",
+      "authorId": "admin_1"
+    },
+    {
+      "title": "Urgent: Scheduled Power Outage",
+      "content": "Please note that the main campus library will experience a power outage this Sunday from 8 AM to 12 PM for maintenance.",
+      "category": "urgent",
+      "authorId": "admin_1"
+    },
+    {
+      "title": "Summer Holiday Announcement",
+      "content": "The university offices will remain closed on July 4th in observance of Independence Day.",
+      "category": "holiday",
+      "authorId": "admin_1"
+    },
+    {
+      "title": "Academic Calendar Updates",
+      "content": "The mid-term exam schedule has been published. Please check your respective department portals for details.",
+      "category": "academic",
+      "authorId": "admin_1"
+    }
   ]
 }

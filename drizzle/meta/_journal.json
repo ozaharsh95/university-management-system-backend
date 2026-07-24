@@ -22,6 +22,13 @@
       "when": 1783074368476,
       "tag": "0002_greedy_paladin",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1784910347800,
+      "tag": "0003_silly_mad_thinker",
+      "breakpoints": true
     }
   ]
 }
