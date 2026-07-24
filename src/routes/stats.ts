@@ -79,15 +79,141 @@ router.get(
         .leftJoin(enrollments, eq(enrollments.classId, classes.id))
         .groupBy(departments.id, departments.name);
 
+      const classesPerDepartment = await db
+        .select({
+          departmentId: departments.id,
+          departmentName: departments.name,
+          totalClasses: sql<number>`count(${classes.id})`,
+        })
+        .from(departments)
+        .leftJoin(subjects, eq(subjects.departmentId, departments.id))
+        .leftJoin(classes, eq(classes.subjectId, subjects.id))
+        .groupBy(departments.id, departments.name);
+
+      const classesStatusWise = await db
+        .select({
+          status: classes.status,
+          count: sql<number>`count(${classes.id})`,
+        })
+        .from(classes)
+        .groupBy(classes.status);
+
+      const topTeachers = await db
+        .select({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          image: user.image,
+          classCount: sql<number>`count(${classes.id})`,
+        })
+        .from(user)
+        .leftJoin(classes, eq(classes.teacherId, user.id))
+        .where(eq(user.role, "teacher"))
+        .groupBy(user.id, user.name, user.email, user.image)
+        .orderBy(desc(sql`count(${classes.id})`))
+        .limit(5);
+
       response.status(200).json({
         success: true,
-        data: studentsPerDepartment,
+        data: {
+          studentsPerDepartment,
+          classesPerDepartment,
+          classesStatusWise,
+          topTeachers,
+        },
       });
     } catch (error) {
       console.error(`GET /stats/charts error: ${error}`);
       response.status(500).json({
         success: false,
         message: "Failed to fetch admin charts stats",
+      });
+    }
+  },
+);
+
+// GET admin dashboard table activity
+router.get(
+  "/activity",
+  requireAuth(["admin"]),
+  async (request: Request, response: Response) => {
+    try {
+      const recentUsers = await db
+        .select({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          image: user.image,
+          createdAt: user.createdAt,
+        })
+        .from(user)
+        .orderBy(desc(user.createdAt))
+        .limit(10);
+
+      const recentClasses = await db
+        .select({
+          id: classes.id,
+          name: classes.name,
+          description: classes.description,
+          capacity: classes.capacity,
+          status: classes.status,
+          inviteCode: classes.inviteCode,
+          subjectName: subjects.name,
+          teacherName: user.name,
+          createdAt: classes.createdAt,
+        })
+        .from(classes)
+        .leftJoin(subjects, eq(classes.subjectId, subjects.id))
+        .leftJoin(user, eq(classes.teacherId, user.id))
+        .orderBy(desc(classes.createdAt))
+        .limit(10);
+
+      const latestEnrollments = await db
+        .select({
+          id: enrollments.id,
+          studentName: user.name,
+          studentEmail: user.email,
+          className: classes.name,
+          classInviteCode: classes.inviteCode,
+          createdAt: enrollments.createdAt,
+        })
+        .from(enrollments)
+        .leftJoin(user, eq(enrollments.studentId, user.id))
+        .leftJoin(classes, eq(enrollments.classId, classes.id))
+        .orderBy(desc(enrollments.createdAt))
+        .limit(10);
+
+      const topFilledClasses = await db
+        .select({
+          id: classes.id,
+          name: classes.name,
+          inviteCode: classes.inviteCode,
+          capacity: classes.capacity,
+          subjectName: subjects.name,
+          enrolledCount: sql<number>`count(${enrollments.id})`,
+        })
+        .from(classes)
+        .leftJoin(subjects, eq(classes.subjectId, subjects.id))
+        .leftJoin(enrollments, eq(enrollments.classId, classes.id))
+        .groupBy(classes.id, classes.name, classes.inviteCode, classes.capacity, subjects.name)
+        .orderBy(desc(sql`count(${enrollments.id})`))
+        .limit(10);
+
+      response.status(200).json({
+        success: true,
+        data: {
+          recentUsers,
+          recentClasses,
+          latestEnrollments,
+          topFilledClasses,
+        },
+      });
+    } catch (error) {
+      console.error(`GET /stats/activity error: ${error}`);
+      response.status(500).json({
+        success: false,
+        message: "Failed to fetch admin activity stats",
       });
     }
   },
