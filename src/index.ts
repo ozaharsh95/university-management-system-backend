@@ -7,6 +7,8 @@ import subjectRouter from "./routes/subjects.js";
 import userRouter from "./routes/users.js";
 import classRouter from "./routes/classes.js";
 import statsRouter from "./routes/stats.js";
+import teacherStatsRouter from "./routes/teacherStats.js";
+import studentStatsRouter from "./routes/studentStats.js";
 import securityMiddleware from "./middleware/security.js";
 import { sessionMiddleware } from "./middleware/auth.js";
 import { toNodeHandler } from "better-auth/node";
@@ -36,7 +38,9 @@ app.use(sessionMiddleware);
 app.use("/api/subjects", subjectRouter);
 app.use("/api/users", userRouter);
 app.use("/api/classes", classRouter);
-app.use("/api/stats", statsRouter);
+app.use("/api/stats/admin", statsRouter);
+app.use("/api/stats/teacher", teacherStatsRouter);
+app.use("/api/stats/student", studentStatsRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello welcome !!!");
