@@ -8,6 +8,7 @@ import userRouter from "./routes/users.js";
 import classRouter from "./routes/classes.js";
 import statsRouter from "./routes/stats.js";
 import securityMiddleware from "./middleware/security.js";
+import { sessionMiddleware } from "./middleware/auth.js";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth.js";
 
@@ -29,7 +30,8 @@ app.use(
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
 app.use(express.json());
-app.use(securityMiddleware);
+app.use(sessionMiddleware);
+// app.use(securityMiddleware);
 
 app.use("/api/subjects", subjectRouter);
 app.use("/api/users", userRouter);
