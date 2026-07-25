@@ -8,7 +8,7 @@ import { requireAuth } from "../middleware/auth.js";
 const router = express.Router();
 
 // GET ALL ANNOUNCEMENTS (Accessible by all logged-in roles)
-router.get("/", async (req, res) => {
+router.get("/", requireAuth(), async (req, res) => {
   try {
     const { category, page = 1, limit = 10 } = req.query;
 
@@ -21,8 +21,15 @@ router.get("/", async (req, res) => {
     const offset = (currentPage - 1) * limitPerPage;
 
     const filterConditions = [];
+    const validCategories = ["holiday", "urgent", "academic", "general"];
 
     if (category) {
+      if (
+        typeof category !== "string" ||
+        !validCategories.includes(category as any)
+      ) {
+        return res.status(400).json({ error: "Invalid category filter" });
+      }
       filterConditions.push(eq(announcements.category, category as any));
     }
 
