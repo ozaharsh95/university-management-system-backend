@@ -25,6 +25,13 @@ export const classStatusEnum = pgEnum("class_status", [
   "archived",
 ]);
 
+export const categoryEnum = pgEnum("category", [
+  "holiday",
+  "urgent",
+  "academic",
+  "general",
+]);
+
 export const departments = pgTable("departments", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   code: varchar("code", { length: 50 }).notNull().unique(),
@@ -136,6 +143,31 @@ export const enrollmentsRelations = relations(enrollments, ({ one }) => ({
   }),
 }));
 
+export const announcements = pgTable(
+  "announcements",
+  {
+    id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+    title: varchar("title", { length: 255 }).notNull(),
+    content: text("content").notNull(),
+    category: categoryEnum("category").notNull().default("general"),
+    authorId: text("author_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+
+    ...timestamps,
+  },
+  (table) => ({
+    authorIdIdx: index("announcements_author_id_idx").on(table.authorId),
+  }),
+);
+
+export const announcementsRelations = relations(announcements, ({ one }) => ({
+  author: one(user, {
+    fields: [announcements.authorId],
+    references: [user.id],
+  }),
+}));
+
 export type Department = typeof departments.$inferSelect;
 export type NewDepartment = typeof departments.$inferInsert;
 
@@ -147,3 +179,6 @@ export type NewClass = typeof classes.$inferInsert;
 
 export type Enrollment = typeof enrollments.$inferSelect;
 export type NewEnrollment = typeof enrollments.$inferInsert;
+
+export type Announcement = typeof announcements.$inferSelect;
+export type NewAnnouncement = typeof announcements.$inferInsert;

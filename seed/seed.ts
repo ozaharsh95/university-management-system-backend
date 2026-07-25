@@ -9,6 +9,7 @@ import { drizzle } from "drizzle-orm/neon-serverless";
 import { auth } from "../src/lib/auth.js";
 import {
   account,
+  announcements,
   classes,
   departments,
   enrollments,
@@ -62,12 +63,20 @@ type SeedEnrollment = {
   studentId: string;
 };
 
+type SeedAnnouncement = {
+  title: string;
+  content: string;
+  category: "holiday" | "urgent" | "academic" | "general";
+  authorId: string;
+};
+
 type SeedData = {
   users: SeedUser[];
   departments: SeedDepartment[];
   subjects: SeedSubject[];
   classes: SeedClass[];
   enrollments: SeedEnrollment[];
+  announcements: SeedAnnouncement[];
 };
 
 const __filename = fileURLToPath(import.meta.url);
@@ -117,6 +126,7 @@ const seed = async () => {
   const originalSubjects = await wsDb.select().from(subjects);
   const originalClasses = await wsDb.select().from(classes);
   const originalEnrollments = await wsDb.select().from(enrollments);
+  const originalAnnouncements = await wsDb.select().from(announcements);
 
   try {
     await wsDb.transaction(async (tx) => {
@@ -125,6 +135,7 @@ const seed = async () => {
       await tx.delete(classes);
       await tx.delete(subjects);
       await tx.delete(departments);
+      await tx.delete(announcements);
       await tx.delete(session);
       await tx.delete(account);
       await tx.delete(user);
@@ -162,6 +173,19 @@ const seed = async () => {
           .insert(account)
           .values(accountValues)
           .onConflictDoNothing({ target: [account.providerId, account.accountId] });
+
+        if (data.announcements && data.announcements.length) {
+          await tx
+            .insert(announcements)
+            .values(
+              data.announcements.map((ann) => ({
+                title: ann.title,
+                content: ann.content,
+                category: ann.category,
+                authorId: ann.authorId,
+              })),
+            );
+        }
       }
 
       if (data.departments.length) {
@@ -266,6 +290,7 @@ const seed = async () => {
       await wsDb.delete(classes);
       await wsDb.delete(subjects);
       await wsDb.delete(departments);
+      await wsDb.delete(announcements);
       await wsDb.delete(session);
       await wsDb.delete(account);
       await wsDb.delete(user);
@@ -279,6 +304,9 @@ const seed = async () => {
       }
       if (originalSessions.length) {
         await wsDb.insert(session).values(originalSessions);
+      }
+      if (originalAnnouncements.length) {
+        await wsDb.insert(announcements).overridingSystemValue().values(originalAnnouncements);
       }
       if (originalDepartments.length) {
         await wsDb.insert(departments).overridingSystemValue().values(originalDepartments);

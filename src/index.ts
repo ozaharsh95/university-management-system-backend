@@ -9,6 +9,7 @@ import classRouter from "./routes/classes.js";
 import statsRouter from "./routes/stats.js";
 import teacherStatsRouter from "./routes/teacherStats.js";
 import studentStatsRouter from "./routes/studentStats.js";
+import announcementsRouter from "./routes/announcements.js";
 import securityMiddleware from "./middleware/security.js";
 import { sessionMiddleware } from "./middleware/auth.js";
 import { toNodeHandler } from "better-auth/node";
@@ -24,7 +25,7 @@ if (!process.env.FRONTEND_URL) {
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
   }),
 );
@@ -41,6 +42,7 @@ app.use("/api/classes", classRouter);
 app.use("/api/stats/admin", statsRouter);
 app.use("/api/stats/teacher", teacherStatsRouter);
 app.use("/api/stats/student", studentStatsRouter);
+app.use("/api/announcements", announcementsRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello welcome !!!");

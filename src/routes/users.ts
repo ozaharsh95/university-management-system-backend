@@ -2,11 +2,12 @@ import express from "express";
 import { or, ilike, and, sql, getTableColumns, desc, eq } from "drizzle-orm";
 import { user } from "../db/schema/auth.js";
 import { db } from "../db/index.js";
+import { requireAuth } from "../middleware/auth.js";
 
 const router = express.Router();
 
 // GET ALL USERS
-router.get("/", async (req, res) => {
+router.get("/", requireAuth(["admin"]), async (req, res) => {
   try {
     const { search, role, page = 1, limit = 10 } = req.query;
 
@@ -60,9 +61,105 @@ router.get("/", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error(`GET /teachers error: ${error}`);
+    console.error(`GET /users error: ${error}`);
     res.status(500).json({
-      error: "Failed to get teachers",
+      error: "Failed to get users",
+    });
+  }
+});
+
+// GET SINGLE USER BY ID
+router.get("/:id", requireAuth(), async (req, res) => {
+  try {
+    const userId = req.params.id as string;
+
+    if (!userId) {
+      return res.status(400).json({
+        error: "User ID is required",
+      });
+    }
+
+    const [userDetail] = await db
+      .select({ ...getTableColumns(user) })
+      .from(user)
+      .where(eq(user.id, userId));
+
+    if (!userDetail) {
+      return res.status(404).json({
+        error: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      data: userDetail,
+    });
+  } catch (error) {
+    console.error(`GET /users/:id error: ${error}`);
+    res.status(500).json({
+      error: "Failed to get user details",
+    });
+  }
+});
+
+// PATCH UPDATE USER BY ID (ADMIN ONLY)
+router.patch("/:id", requireAuth(["admin"]), async (req, res) => {
+  try {
+    const userId = req.params.id as string;
+    const { role, name, email } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({
+        error: "User ID is required",
+      });
+    }
+
+    const updateData: Partial<typeof user.$inferInsert> = {};
+
+    if (role !== undefined) {
+      const validRoles = ["admin", "teacher", "student"];
+      if (!validRoles.includes(role)) {
+        return res.status(400).json({
+          error:
+            "Invalid role value. Must be 'admin', 'teacher', or 'student'.",
+        });
+      }
+      updateData.role = role;
+    }
+
+    if (name !== undefined) {
+      updateData.name = name;
+    }
+
+    if (email !== undefined) {
+      updateData.email = email;
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      return res.status(400).json({
+        error:
+          "No fields to update provided. Please provide role, name, or email.",
+      });
+    }
+
+    const [updatedUser] = await db
+      .update(user)
+      .set(updateData)
+      .where(eq(user.id, userId))
+      .returning({ ...getTableColumns(user) });
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        error: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      data: updatedUser,
+    });
+  } catch (error) {
+    console.error(`PATCH /users/:id error: ${error}`);
+    res.status(500).json({
+      error: "Failed to update user",
     });
   }
 });
