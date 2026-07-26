@@ -1,7 +1,8 @@
-import { and, desc, eq, getTableColumns, ilike, or, sql } from "drizzle-orm";
+import { and, desc, eq, getTableColumns, ilike, ne, or, sql } from "drizzle-orm";
 import express from "express";
 import { departments, subjects } from "../db/schema/app.js";
 import { db } from "../db/index.js";
+import { requireAuth } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -69,6 +70,221 @@ router.get("/", async (req, res) => {
     console.error(`GET /subjects error: ${e}`);
     res.status(500).json({
       error: "Failed to get subjects",
+    });
+  }
+});
+
+// GET a single subject by id
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const subject = await db
+      .select({
+        ...getTableColumns(subjects),
+        department: { ...getTableColumns(departments) },
+      })
+      .from(subjects)
+      .leftJoin(departments, eq(subjects.departmentId, departments.id))
+      .where(eq(subjects.id, +id));
+
+    res.status(200).json(subject[0]);
+  } catch (e) {
+    console.error(`GET /subjects/:id error: ${e}`);
+    res.status(500).json({
+      error: "Failed to get subject",
+    });
+  }
+});
+
+// POST a new subject (Admin Only)
+router.post("/", requireAuth(["admin"]), async (req, res) => {
+  try {
+    const { name, code, departmentId, description } = req.body;
+
+    if (!name || !code || departmentId === undefined) {
+      return res.status(400).json({
+        error: "Name, code, and departmentId are required",
+      });
+    }
+
+    const parsedDeptId = Number(departmentId);
+    if (isNaN(parsedDeptId)) {
+      return res.status(400).json({
+        error: "Invalid departmentId format. It must be a number.",
+      });
+    }
+
+    // Verify department exists
+    const [dept] = await db
+      .select()
+      .from(departments)
+      .where(eq(departments.id, parsedDeptId));
+
+    if (!dept) {
+      return res.status(400).json({
+        error: "Department not found",
+      });
+    }
+
+    // Verify subject code is unique
+    const [existingSubject] = await db
+      .select()
+      .from(subjects)
+      .where(eq(subjects.code, code));
+
+    if (existingSubject) {
+      return res.status(400).json({
+        error: `Subject code '${code}' already exists`,
+      });
+    }
+
+    const [createdSubject] = await db
+      .insert(subjects)
+      .values({
+        name,
+        code,
+        departmentId: parsedDeptId,
+        description: description || null,
+      })
+      .returning();
+
+    res.status(201).json({
+      data: createdSubject,
+    });
+  } catch (e) {
+    console.error(`POST /subjects error: ${e}`);
+    res.status(500).json({
+      error: "Failed to create subject",
+    });
+  }
+});
+
+// PATCH update a subject by id (Admin Only)
+router.patch("/:id", requireAuth(["admin"]), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const parsedId = Number(id);
+
+    if (isNaN(parsedId)) {
+      return res.status(400).json({
+        error: "Invalid subject ID",
+      });
+    }
+
+    // Verify subject exists
+    const [subject] = await db
+      .select()
+      .from(subjects)
+      .where(eq(subjects.id, parsedId));
+
+    if (!subject) {
+      return res.status(404).json({
+        error: "Subject not found",
+      });
+    }
+
+    const { name, code, departmentId, description } = req.body;
+    const updateData: Partial<typeof subjects.$inferInsert> = {};
+
+    if (name !== undefined) {
+      updateData.name = name;
+    }
+
+    if (code !== undefined) {
+      // Verify subject code is unique among other subjects
+      const [existingSubject] = await db
+        .select()
+        .from(subjects)
+        .where(and(eq(subjects.code, code), ne(subjects.id, parsedId)));
+
+      if (existingSubject) {
+        return res.status(400).json({
+          error: `Subject code '${code}' already exists`,
+        });
+      }
+      updateData.code = code;
+    }
+
+    if (departmentId !== undefined) {
+      const parsedDeptId = Number(departmentId);
+      if (isNaN(parsedDeptId)) {
+        return res.status(400).json({
+          error: "Invalid departmentId format. It must be a number.",
+        });
+      }
+
+      // Verify department exists
+      const [dept] = await db
+        .select()
+        .from(departments)
+        .where(eq(departments.id, parsedDeptId));
+
+      if (!dept) {
+        return res.status(400).json({
+          error: "Department not found",
+        });
+      }
+      updateData.departmentId = parsedDeptId;
+    }
+
+    if (description !== undefined) {
+      updateData.description = description || null;
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      return res.status(400).json({
+        error: "No fields to update provided. Please provide name, code, departmentId, or description.",
+      });
+    }
+
+    const [updatedSubject] = await db
+      .update(subjects)
+      .set(updateData)
+      .where(eq(subjects.id, parsedId))
+      .returning();
+
+    res.status(200).json({
+      data: updatedSubject,
+    });
+  } catch (e) {
+    console.error(`PATCH /subjects/:id error: ${e}`);
+    res.status(500).json({
+      error: "Failed to update subject",
+    });
+  }
+});
+
+// DELETE a subject by id (Admin Only)
+router.delete("/:id", requireAuth(["admin"]), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const parsedId = Number(id);
+
+    if (isNaN(parsedId)) {
+      return res.status(400).json({
+        error: "Invalid subject ID",
+      });
+    }
+
+    const [deletedSubject] = await db
+      .delete(subjects)
+      .where(eq(subjects.id, parsedId))
+      .returning();
+
+    if (!deletedSubject) {
+      return res.status(404).json({
+        error: "Subject not found",
+      });
+    }
+
+    res.status(200).json({
+      message: "Subject deleted successfully",
+      data: deletedSubject,
+    });
+  } catch (e) {
+    console.error(`DELETE /subjects/:id error: ${e}`);
+    res.status(500).json({
+      error: "Failed to delete subject",
     });
   }
 });
