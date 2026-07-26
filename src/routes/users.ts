@@ -7,7 +7,7 @@ import { requireAuth } from "../middleware/auth.js";
 const router = express.Router();
 
 // GET ALL USERS
-router.get("/", requireAuth(["admin"]), async (req, res) => {
+router.get("/", requireAuth(["admin", "teacher"]), async (req, res) => {
   try {
     const { search, role, page = 1, limit = 10 } = req.query;
 
@@ -25,9 +25,12 @@ router.get("/", requireAuth(["admin"]), async (req, res) => {
       );
     }
 
+    // Determine target role (Teachers are restricted to seeing students only)
+    const targetRole = req.user!.role === "teacher" ? "student" : role;
+
     // If role exists, match role name
-    if (role) {
-      filterConditions.push(eq(user.role, role as UserRoles));
+    if (targetRole) {
+      filterConditions.push(eq(user.role, targetRole as any));
     }
 
     // Combine all filters using AND if any exist

@@ -1,13 +1,13 @@
 import express from "express";
 import { db } from "../db/index.js";
-import { classes, departments, subjects } from "../db/schema/app.js";
+import { classes, departments, subjects, enrollments } from "../db/schema/app.js";
 import { and, desc, eq, getTableColumns, ilike, ne, or, sql } from "drizzle-orm";
 import { user } from "../db/schema/auth.js";
 import { requireAuth } from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+router.post("/", requireAuth(["admin"]), async (req, res) => {
   try {
     const [createdClass] = await db
       .insert(classes)
@@ -35,7 +35,7 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const { search, subject, teacher, teacherId, page = 1, limit = 10 } = req.query;
+    const { search, subject, teacher, teacherId, studentId, page = 1, limit = 10 } = req.query;
 
     const currentPage = Math.max(1, parseInt(String(page), 10) || 1);
     const limitPerPage = Math.min(
@@ -76,19 +76,20 @@ router.get("/", async (req, res) => {
       filterConditions.push(eq(classes.teacherId, String(teacherId)));
     }
 
+    if (studentId) {
+      filterConditions.push(eq(enrollments.studentId, String(studentId)));
+    }
+
     const whereClause =
       filterConditions.length > 0 ? and(...filterConditions) : undefined;
 
-    const countResult = await db
-      .select({ count: sql<number>`count (*)` })
+    let countQuery = db
+      .select({ count: sql<number>`count(distinct ${classes.id})` })
       .from(classes)
       .leftJoin(subjects, eq(classes.subjectId, subjects.id))
-      .leftJoin(user, eq(classes.teacherId, user.id))
-      .where(whereClause);
+      .leftJoin(user, eq(classes.teacherId, user.id));
 
-    const totalCount = countResult[0]?.count ?? 0;
-
-    const classesList = await db
+    let listQuery = db
       .select({
         ...getTableColumns(classes),
         subject: { ...getTableColumns(subjects) },
@@ -96,7 +97,17 @@ router.get("/", async (req, res) => {
       })
       .from(classes)
       .leftJoin(subjects, eq(classes.subjectId, subjects.id))
-      .leftJoin(user, eq(classes.teacherId, user.id))
+      .leftJoin(user, eq(classes.teacherId, user.id));
+
+    if (studentId) {
+      countQuery = countQuery.innerJoin(enrollments, eq(classes.id, enrollments.classId)) as any;
+      listQuery = listQuery.innerJoin(enrollments, eq(classes.id, enrollments.classId)) as any;
+    }
+
+    const countResult = await countQuery.where(whereClause);
+    const totalCount = countResult[0]?.count ?? 0;
+
+    const classesList = await listQuery
       .where(whereClause)
       .orderBy(desc(classes.createdAt))
       .limit(limitPerPage)
