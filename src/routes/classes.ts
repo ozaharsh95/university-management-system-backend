@@ -363,7 +363,7 @@ router.patch("/:id", requireAuth(["admin", "teacher"]), async (req, res) => {
 
     if (capacity !== undefined) {
       const parsedCapacity = Number(capacity);
-      if (isNaN(parsedCapacity) || parsedCapacity <= 0) {
+      if (!Number.isInteger(parsedCapacity) || parsedCapacity <= 0) {
         return res.status(400).json({
           error: "Capacity must be a positive number",
         });
