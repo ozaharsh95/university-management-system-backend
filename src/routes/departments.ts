@@ -82,12 +82,25 @@ router.get("/", async (req, res) => {
 
 // POST create a department (Admin Only)
 router.post("/", requireAuth(["admin"]), async (req, res) => {
+  const { name, code, description } = req.body;
   try {
-    const { name, code, description } = req.body;
-
-    if (!name || !code) {
+    if (
+      typeof name !== "string" ||
+      name.trim().length === 0 ||
+      name.length > 255
+    ) {
       return res.status(400).json({
-        error: "Name and code are required",
+        error: "Name must be a non-empty string of at most 255 characters",
+      });
+    }
+
+    if (
+      typeof code !== "string" ||
+      code.trim().length === 0 ||
+      code.length > 50
+    ) {
+      return res.status(400).json({
+        error: "Code must be a non-empty string of at most 50 characters",
       });
     }
 
@@ -115,7 +128,12 @@ router.post("/", requireAuth(["admin"]), async (req, res) => {
     res.status(201).json({
       data: createdDept,
     });
-  } catch (e) {
+  } catch (e: any) {
+    if (e && e.code === "23505") {
+      return res.status(400).json({
+        error: `Department code '${code}' already exists`,
+      });
+    }
     console.error(`POST /departments error: ${e}`);
     res.status(500).json({
       error: "Failed to create department",
