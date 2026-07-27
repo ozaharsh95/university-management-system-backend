@@ -128,15 +128,23 @@ router.get("/", async (req, res) => {
       .leftJoin(subjects, eq(classes.subjectId, subjects.id))
       .leftJoin(user, eq(classes.teacherId, user.id));
 
-    let listQuery = db
-      .select({
-        ...getTableColumns(classes),
-        subject: { ...getTableColumns(subjects) },
-        teacher: { ...getTableColumns(user) },
-      })
-      .from(classes)
-      .leftJoin(subjects, eq(classes.subjectId, subjects.id))
-      .leftJoin(user, eq(classes.teacherId, user.id));
+    const listQueryFields = {
+      ...getTableColumns(classes),
+      subject: { ...getTableColumns(subjects) },
+      teacher: { ...getTableColumns(user) },
+    };
+
+    let listQuery = studentId
+      ? db
+          .selectDistinct(listQueryFields)
+          .from(classes)
+          .leftJoin(subjects, eq(classes.subjectId, subjects.id))
+          .leftJoin(user, eq(classes.teacherId, user.id))
+      : db
+          .select(listQueryFields)
+          .from(classes)
+          .leftJoin(subjects, eq(classes.subjectId, subjects.id))
+          .leftJoin(user, eq(classes.teacherId, user.id));
 
     if (studentId) {
       countQuery = countQuery.innerJoin(
