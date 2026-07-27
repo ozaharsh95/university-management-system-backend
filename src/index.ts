@@ -10,6 +10,8 @@ import statsRouter from "./routes/stats.js";
 import teacherStatsRouter from "./routes/teacherStats.js";
 import studentStatsRouter from "./routes/studentStats.js";
 import announcementsRouter from "./routes/announcements.js";
+import departmentsRouter from "./routes/departments.js";
+import enrollmentsRouter from "./routes/enrollments.js";
 import securityMiddleware from "./middleware/security.js";
 import { sessionMiddleware } from "./middleware/auth.js";
 import { toNodeHandler } from "better-auth/node";
@@ -43,6 +45,8 @@ app.use("/api/stats/admin", statsRouter);
 app.use("/api/stats/teacher", teacherStatsRouter);
 app.use("/api/stats/student", studentStatsRouter);
 app.use("/api/announcements", announcementsRouter);
+app.use("/api/departments", departmentsRouter);
+app.use("/api/enrollments", enrollmentsRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello welcome !!!");
