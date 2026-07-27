@@ -12,8 +12,14 @@ router.get("/", requireAuth(["admin"]), async (req, res) => {
   try {
     const { studentId, classId, page = 1, limit = 10 } = req.query;
 
-    const currentPage = Math.max(1, +page);
-    const limitPerPage = Math.max(1, +limit);
+    const parsedPage = Number(page);
+    const parsedLimit = Number(limit);
+    const currentPage = Number.isFinite(parsedPage)
+      ? Math.max(1, Math.trunc(parsedPage))
+      : 1;
+    const limitPerPage = Number.isFinite(parsedLimit)
+      ? Math.min(100, Math.max(1, Math.trunc(parsedLimit)))
+      : 10;
 
     const offset = (currentPage - 1) * limitPerPage;
 
@@ -197,7 +203,8 @@ router.delete("/:id", requireAuth(["admin", "teacher"]), async (req, res) => {
 
       if (!cls || cls.teacherId !== req.user!.id) {
         return res.status(403).json({
-          error: "Forbidden - You do not have permission to delete this enrollment",
+          error:
+            "Forbidden - You do not have permission to delete this enrollment",
         });
       }
     }
