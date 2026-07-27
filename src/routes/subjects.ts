@@ -3,7 +3,7 @@ import express from "express";
 import { departments, subjects } from "../db/schema/app.js";
 import { db } from "../db/index.js";
 import { requireAuth } from "../middleware/auth.js";
-import { validatePatchString } from "../lib/validators.js";
+import { validatePatchString, parseRouteId } from "../lib/validators.js";
 
 const router = express.Router();
 
@@ -78,17 +78,31 @@ router.get("/", async (req, res) => {
 // GET a single subject by id
 router.get("/:id", async (req, res) => {
   try {
-    const { id } = req.params;
-    const subject = await db
+    const subjectId = parseRouteId(req.params.id);
+    if (subjectId === null) {
+      return res.status(400).json({
+        error: "Invalid subject ID",
+      });
+    }
+
+    const [subject] = await db
       .select({
         ...getTableColumns(subjects),
         department: { ...getTableColumns(departments) },
       })
       .from(subjects)
       .leftJoin(departments, eq(subjects.departmentId, departments.id))
-      .where(eq(subjects.id, +id));
+      .where(eq(subjects.id, subjectId));
 
-    res.status(200).json(subject[0]);
+    if (!subject) {
+      return res.status(404).json({
+        error: "Subject not found",
+      });
+    }
+
+    res.status(200).json({
+      data: subject,
+    });
   } catch (e) {
     console.error(`GET /subjects/:id error: ${e}`);
     res.status(500).json({

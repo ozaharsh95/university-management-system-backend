@@ -14,3 +14,17 @@ export function validatePatchString(
   }
   return null;
 }
+
+export function parseRouteId(id: string | string[] | undefined): number | null {
+  if (typeof id !== "string") {
+    return null;
+  }
+  if (!/^[1-9]\d*$/.test(id)) {
+    return null;
+  }
+  const parsed = Number(id);
+  if (!Number.isInteger(parsed) || parsed <= 0) {
+    return null;
+  }
+  return parsed;
+}
