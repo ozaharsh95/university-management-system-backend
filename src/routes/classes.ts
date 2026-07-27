@@ -1,7 +1,21 @@
 import express from "express";
 import { db } from "../db/index.js";
-import { classes, departments, subjects, enrollments } from "../db/schema/app.js";
-import { and, desc, eq, getTableColumns, ilike, ne, or, sql } from "drizzle-orm";
+import {
+  classes,
+  departments,
+  subjects,
+  enrollments,
+} from "../db/schema/app.js";
+import {
+  and,
+  desc,
+  eq,
+  getTableColumns,
+  ilike,
+  ne,
+  or,
+  sql,
+} from "drizzle-orm";
 import { user } from "../db/schema/auth.js";
 import { requireAuth } from "../middleware/auth.js";
 
@@ -49,7 +63,15 @@ router.post("/", requireAuth(["admin"]), async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const { search, subject, teacher, teacherId, studentId, page = 1, limit = 10 } = req.query;
+    const {
+      search,
+      subject,
+      teacher,
+      teacherId,
+      studentId,
+      page = 1,
+      limit = 10,
+    } = req.query;
 
     const currentPage = Math.max(1, parseInt(String(page), 10) || 1);
     const limitPerPage = Math.min(
@@ -114,8 +136,14 @@ router.get("/", async (req, res) => {
       .leftJoin(user, eq(classes.teacherId, user.id));
 
     if (studentId) {
-      countQuery = countQuery.innerJoin(enrollments, eq(classes.id, enrollments.classId)) as any;
-      listQuery = listQuery.innerJoin(enrollments, eq(classes.id, enrollments.classId)) as any;
+      countQuery = countQuery.innerJoin(
+        enrollments,
+        eq(classes.id, enrollments.classId),
+      ) as any;
+      listQuery = listQuery.innerJoin(
+        enrollments,
+        eq(classes.id, enrollments.classId),
+      ) as any;
     }
 
     const countResult = await countQuery.where(whereClause);
@@ -214,7 +242,10 @@ router.patch("/:id", requireAuth(["admin", "teacher"]), async (req, res) => {
     }
 
     // Authorization check: Teachers can only edit classes they teach
-    if (req.user!.role === "teacher" && existingClass.teacherId !== req.user!.id) {
+    if (
+      req.user!.role === "teacher" &&
+      existingClass.teacherId !== req.user!.id
+    ) {
       return res.status(403).json({
         error: "Forbidden - You do not have permission to modify this class",
       });
@@ -303,11 +334,24 @@ router.patch("/:id", requireAuth(["admin", "teacher"]), async (req, res) => {
     }
 
     if (inviteCode !== undefined) {
+      if (
+        typeof inviteCode !== "string" ||
+        inviteCode.trim().length === 0 ||
+        inviteCode.length > 50
+      ) {
+        return res.status(400).json({
+          error:
+            "inviteCode must be a non-empty string of at most 50 characters",
+        });
+      }
+
       // Verify invite code is unique
       const [existingWithCode] = await db
         .select()
         .from(classes)
-        .where(and(eq(classes.inviteCode, inviteCode), ne(classes.id, classId)));
+        .where(
+          and(eq(classes.inviteCode, inviteCode), ne(classes.id, classId)),
+        );
 
       if (existingWithCode) {
         return res.status(400).json({
@@ -344,7 +388,13 @@ router.patch("/:id", requireAuth(["admin", "teacher"]), async (req, res) => {
         });
       }
       for (const s of schedules) {
-        if (typeof s !== "object" || s === null || !s.day || !s.startTime || !s.endTime) {
+        if (
+          typeof s !== "object" ||
+          s === null ||
+          !s.day ||
+          !s.startTime ||
+          !s.endTime
+        ) {
           return res.status(400).json({
             error: "Each schedule must have 'day', 'startTime', and 'endTime'.",
           });
@@ -400,7 +450,10 @@ router.delete("/:id", requireAuth(["admin", "teacher"]), async (req, res) => {
     }
 
     // Authorization check: Teachers can only delete classes they teach
-    if (req.user!.role === "teacher" && existingClass.teacherId !== req.user!.id) {
+    if (
+      req.user!.role === "teacher" &&
+      existingClass.teacherId !== req.user!.id
+    ) {
       return res.status(403).json({
         error: "Forbidden - You do not have permission to delete this class",
       });
