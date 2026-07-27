@@ -7,6 +7,20 @@ import { requireAuth } from "../middleware/auth.js";
 
 const router = express.Router();
 
+function parseClassId(id: string | string[] | undefined): number | null {
+  if (typeof id !== "string") {
+    return null;
+  }
+  if (!/^[1-9]\d*$/.test(id)) {
+    return null;
+  }
+  const parsed = Number(id);
+  if (!Number.isInteger(parsed) || parsed <= 0) {
+    return null;
+  }
+  return parsed;
+}
+
 router.post("/", requireAuth(["admin"]), async (req, res) => {
   try {
     const [createdClass] = await db
@@ -134,9 +148,9 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const classId = Number(req.params.id);
+    const classId = parseClassId(req.params.id);
 
-    if (!Number.isFinite(classId)) {
+    if (classId === null) {
       return res.status(400).json({
         error: "No class found",
       });
@@ -179,9 +193,9 @@ router.get("/:id", async (req, res) => {
 // PATCH update a class by id (Admin and Teacher)
 router.patch("/:id", requireAuth(["admin", "teacher"]), async (req, res) => {
   try {
-    const classId = Number(req.params.id);
+    const classId = parseClassId(req.params.id);
 
-    if (!Number.isFinite(classId)) {
+    if (classId === null) {
       return res.status(400).json({
         error: "Invalid class ID",
       });
@@ -365,9 +379,9 @@ router.patch("/:id", requireAuth(["admin", "teacher"]), async (req, res) => {
 // DELETE a class by id (Admin and Teacher)
 router.delete("/:id", requireAuth(["admin", "teacher"]), async (req, res) => {
   try {
-    const classId = Number(req.params.id);
+    const classId = parseClassId(req.params.id);
 
-    if (!Number.isFinite(classId)) {
+    if (classId === null) {
       return res.status(400).json({
         error: "Invalid class ID",
       });
