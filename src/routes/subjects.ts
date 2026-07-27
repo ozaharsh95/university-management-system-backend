@@ -3,6 +3,7 @@ import express from "express";
 import { departments, subjects } from "../db/schema/app.js";
 import { db } from "../db/index.js";
 import { requireAuth } from "../middleware/auth.js";
+import { validatePatchString } from "../lib/validators.js";
 
 const router = express.Router();
 
@@ -187,10 +188,18 @@ router.patch("/:id", requireAuth(["admin"]), async (req, res) => {
     const updateData: Partial<typeof subjects.$inferInsert> = {};
 
     if (name !== undefined) {
+      const nameErr = validatePatchString(name, "Name", 255);
+      if (nameErr) {
+        return res.status(400).json({ error: nameErr });
+      }
       updateData.name = name;
     }
 
     if (code !== undefined) {
+      const codeErr = validatePatchString(code, "Code", 50);
+      if (codeErr) {
+        return res.status(400).json({ error: codeErr });
+      }
       // Verify subject code is unique among other subjects
       const [existingSubject] = await db
         .select()
