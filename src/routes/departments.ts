@@ -13,7 +13,7 @@ import { departments, subjects } from "../db/schema/app.js";
 import { db } from "../db/index.js";
 import { requireAuth } from "../middleware/auth.js";
 import { validatePatchString } from "../lib/validators.js";
-import logger from "../lib/logger.js";
+import logger, { getErrorMetadata } from "../lib/logger.js";
 
 const router = express.Router();
 
@@ -75,7 +75,7 @@ router.get("/", async (req, res) => {
       },
     });
   } catch (e) {
-    logger.error("GET /departments error", e);
+    logger.error("GET /departments error", getErrorMetadata(e));
     res.status(500).json({
       error: "Failed to get departments",
     });
@@ -136,7 +136,7 @@ router.post("/", requireAuth(["admin"]), async (req, res) => {
         error: `Department code '${code}' already exists`,
       });
     }
-    logger.error("POST /departments error", e);
+    logger.error("POST /departments error", getErrorMetadata(e));
     res.status(500).json({
       error: "Failed to create department",
     });
@@ -218,7 +218,7 @@ router.patch("/:id", requireAuth(["admin"]), async (req, res) => {
       data: updatedDept,
     });
   } catch (e) {
-    logger.error("PATCH /departments/:id error", e);
+    logger.error("PATCH /departments/:id error", getErrorMetadata(e));
     res.status(500).json({
       error: "Failed to update department",
     });
@@ -267,7 +267,7 @@ router.delete("/:id", requireAuth(["admin"]), async (req, res) => {
       data: deletedDept,
     });
   } catch (e) {
-    logger.error("DELETE /departments/:id error", e);
+    logger.error("DELETE /departments/:id error", getErrorMetadata(e));
     res.status(500).json({
       error: "Failed to delete department",
     });

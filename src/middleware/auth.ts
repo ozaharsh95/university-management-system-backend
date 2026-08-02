@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { auth } from "../lib/auth.js";
 import { fromNodeHeaders } from "better-auth/node";
-import logger from "../lib/logger.js";
+import logger, { getErrorMetadata } from "../lib/logger.js";
 
 export const sessionMiddleware = async (
   req: Request,
@@ -26,7 +26,7 @@ export const sessionMiddleware = async (
       logger.warn(`session is undefined`);
     }
   } catch (error) {
-    logger.error("Session middleware error", error);
+    logger.error("Session middleware error", getErrorMetadata(error));
   }
   next();
 };

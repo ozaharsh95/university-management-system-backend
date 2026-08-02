@@ -18,7 +18,7 @@ import {
 } from "drizzle-orm";
 import { user } from "../db/schema/auth.js";
 import { requireAuth } from "../middleware/auth.js";
-import logger from "../lib/logger.js";
+import logger, { getErrorMetadata } from "../lib/logger.js";
 
 const router = express.Router();
 
@@ -55,7 +55,7 @@ router.post("/", requireAuth(["admin"]), async (req, res) => {
       data: createdClass,
     });
   } catch (error) {
-    logger.error("POST /classes error", error);
+    logger.error("POST /classes error", getErrorMetadata(error));
     res.status(500).json({
       error,
     });
@@ -177,7 +177,7 @@ router.get("/", async (req, res) => {
       },
     });
   } catch (error) {
-    logger.error("GET /classes error", error);
+    logger.error("GET /classes error", getErrorMetadata(error));
 
     res.status(500).json({
       error: "Failed to get classes",
@@ -220,7 +220,7 @@ router.get("/:id", async (req, res) => {
       data: classDetails,
     });
   } catch (error) {
-    logger.error("GET /classes/:id error", error);
+    logger.error("GET /classes/:id error", getErrorMetadata(error));
 
     res.status(500).json({
       error: "Failed to get classes",
@@ -429,7 +429,7 @@ router.patch("/:id", requireAuth(["admin", "teacher"]), async (req, res) => {
       data: updatedClass,
     });
   } catch (error) {
-    logger.error("PATCH /classes/:id error", error);
+    logger.error("PATCH /classes/:id error", getErrorMetadata(error));
     res.status(500).json({
       error: "Failed to update class",
     });
@@ -479,7 +479,7 @@ router.delete("/:id", requireAuth(["admin", "teacher"]), async (req, res) => {
       data: deletedClass,
     });
   } catch (error) {
-    logger.error("DELETE /classes/:id error", error);
+    logger.error("DELETE /classes/:id error", getErrorMetadata(error));
     res.status(500).json({
       error: "Failed to delete class",
     });

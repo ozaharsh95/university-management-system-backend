@@ -8,7 +8,7 @@ import {
   subjects,
 } from "../db/schema/app.js";
 import { user } from "../db/schema/auth.js";
-import logger from "../lib/logger.js";
+import logger, { getErrorMetadata } from "../lib/logger.js";
 import { requireAuth } from "../middleware/auth.js";
 
 const router = express.Router();
@@ -79,7 +79,7 @@ router.get(
         data: statData,
       });
     } catch (error) {
-      logger.error("GET /stats/teacher/overview error", error);
+      logger.error("GET /stats/teacher/overview error", getErrorMetadata(error));
       response.status(500).json({
         success: false,
         message: "Failed to fetch teacher overview stats",
@@ -170,7 +170,7 @@ router.get(
         },
       });
     } catch (error) {
-      logger.error("GET /stats/teacher/charts error", error);
+      logger.error("GET /stats/teacher/charts error", getErrorMetadata(error));
       response.status(500).json({
         success: false,
         message: "Failed to fetch teacher charts stats",
@@ -241,7 +241,7 @@ router.get(
         },
       });
     } catch (error) {
-      logger.error("GET /stats/teacher/activity error", error);
+      logger.error("GET /stats/teacher/activity error", getErrorMetadata(error));
       response.status(500).json({
         success: false,
         message: "Failed to fetch teacher activity stats",
