@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import aj from "../config/arcjet.js";
 import { slidingWindow, ArcjetNodeRequest } from "@arcjet/node";
+import logger, { getErrorMetadata } from "../lib/logger.js";
 
 const securityMiddleware = async (
   req: Request,
@@ -75,7 +76,7 @@ const securityMiddleware = async (
 
     next();
   } catch (e) {
-    console.error("Arcjet middleware error: ", e);
+    logger.error("Arcjet middleware error", getErrorMetadata(e));
 
     res.status(500).json({
       error: "Internal error",
