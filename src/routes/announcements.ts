@@ -4,6 +4,7 @@ import { announcements } from "../db/schema/app.js";
 import { user } from "../db/schema/auth.js";
 import { and, desc, eq, getTableColumns, sql } from "drizzle-orm";
 import { requireAuth } from "../middleware/auth.js";
+import logger from "../lib/logger.js";
 
 const router = express.Router();
 
@@ -70,7 +71,7 @@ router.get("/", requireAuth(), async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("GET /announcements error:", error);
+    logger.error("GET /announcements error", error);
     res.status(500).json({
       error: "Failed to get announcements",
     });
@@ -110,7 +111,7 @@ router.post("/", requireAuth(["admin"]), async (req, res) => {
       data: createdAnnouncement,
     });
   } catch (error) {
-    console.error("POST /announcements error:", error);
+    logger.error("POST /announcements error", error);
     res.status(500).json({
       error: "Failed to create announcement",
     });
@@ -144,7 +145,7 @@ router.delete("/:id", requireAuth(["admin"]), async (req, res) => {
       data: deletedAnnouncement,
     });
   } catch (error) {
-    console.error("DELETE /announcements/:id error:", error);
+    logger.error("DELETE /announcements/:id error", error);
     res.status(500).json({
       error: "Failed to delete announcement",
     });

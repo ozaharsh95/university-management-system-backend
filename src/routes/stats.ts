@@ -8,6 +8,7 @@ import {
   subjects,
 } from "../db/schema/app.js";
 import { user } from "../db/schema/auth.js";
+import logger from "../lib/logger.js";
 import { requireAuth } from "../middleware/auth.js";
 
 const router = express.Router();
@@ -53,7 +54,7 @@ router.get(
         data: statData,
       });
     } catch (error) {
-      console.error(`GET /stats/overview error: ${error}`);
+      logger.error("GET /stats/overview error", error);
       response.status(500).json({
         success: false,
         message: "Failed to fetch admin overview stats",
@@ -123,7 +124,7 @@ router.get(
         },
       });
     } catch (error) {
-      console.error(`GET /stats/charts error: ${error}`);
+      logger.error("GET /stats/charts error", error);
       response.status(500).json({
         success: false,
         message: "Failed to fetch admin charts stats",
@@ -210,7 +211,7 @@ router.get(
         },
       });
     } catch (error) {
-      console.error(`GET /stats/activity error: ${error}`);
+      logger.error("GET /stats/activity error", error);
       response.status(500).json({
         success: false,
         message: "Failed to fetch admin activity stats",

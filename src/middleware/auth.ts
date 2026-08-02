@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { auth } from "../lib/auth.js";
 import { fromNodeHeaders } from "better-auth/node";
+import logger from "../lib/logger.js";
 
 export const sessionMiddleware = async (
   req: Request,
@@ -12,16 +13,20 @@ export const sessionMiddleware = async (
       headers: fromNodeHeaders(req.headers),
     });
 
-    console.log(session);
-
     if (session) {
+      logger.debug("Session retrieved", {
+        userId: session.user.id,
+        role: session.user.role,
+      });
       req.user = {
         id: session.user.id,
         role: session.user.role as "admin" | "teacher" | "student",
       };
+    } else {
+      logger.warn(`session is undefined`);
     }
   } catch (error) {
-    console.error("Session middleware error:", error);
+    logger.error("Session middleware error", error);
   }
   next();
 };
@@ -31,11 +36,17 @@ export const requireAuth = (
 ) => {
   return (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
+      logger.warn(
+        `401 - Unauthorized | requireAuth | ${req.method} ${req.originalUrl} | IP: ${req.ip}`,
+      );
       return res.status(401).json({
         success: false,
         message: "Unauthorized - Please log in",
       });
     }
+    logger.info(
+      `SESSION MIDDLEWARE | requireAuth | ${req.method} | ${req.originalUrl} | ${JSON.stringify(req.user)}`,
+    );
 
     if (
       allowedRoles &&

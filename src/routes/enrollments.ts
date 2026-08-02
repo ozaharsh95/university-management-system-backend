@@ -4,6 +4,7 @@ import { enrollments, classes } from "../db/schema/app.js";
 import { user } from "../db/schema/auth.js";
 import { db } from "../db/index.js";
 import { requireAuth } from "../middleware/auth.js";
+import logger from "../lib/logger.js";
 
 const router = express.Router();
 
@@ -79,7 +80,7 @@ router.get("/", requireAuth(["admin"]), async (req, res) => {
       },
     });
   } catch (e) {
-    console.error(`GET /enrollments error: ${e}`);
+    logger.error("GET /enrollments error", e);
     res.status(500).json({
       error: "Failed to get enrollments",
     });
@@ -164,7 +165,7 @@ router.post("/", requireAuth(["admin"]), async (req, res) => {
       data: createdEnrollment,
     });
   } catch (e) {
-    console.error(`POST /enrollments error: ${e}`);
+    logger.error("POST /enrollments error", e);
     res.status(500).json({
       error: "Failed to create enrollment",
     });
@@ -219,7 +220,7 @@ router.delete("/:id", requireAuth(["admin", "teacher"]), async (req, res) => {
       data: deletedEnrollment,
     });
   } catch (e) {
-    console.error(`DELETE /enrollments/:id error: ${e}`);
+    logger.error("DELETE /enrollments/:id error", e);
     res.status(500).json({
       error: "Failed to delete enrollment",
     });
@@ -293,7 +294,7 @@ router.post("/join", requireAuth(["student"]), async (req, res) => {
       data: newEnrollment,
     });
   } catch (e) {
-    console.error(`POST /enrollments/join error: ${e}`);
+    logger.error("POST /enrollments/join error", e);
     res.status(500).json({
       error: "Failed to join class",
     });
