@@ -16,6 +16,9 @@ import securityMiddleware from "./middleware/security.js";
 import { sessionMiddleware } from "./middleware/auth.js";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth.js";
+import logger from "./lib/logger.js";
+import requestLogger from "./middleware/requestLogger.js";
+import errorHandler from "./middleware/errorHandler.js";
 
 const app = express();
 const PORT = 8000;
@@ -31,6 +34,8 @@ app.use(
     credentials: true,
   }),
 );
+
+app.use(requestLogger);
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
@@ -52,6 +57,8 @@ app.get("/", (req, res) => {
   res.send("Hello welcome !!!");
 });
 
+app.use(errorHandler);
+
 app.listen(PORT, () => {
-  console.log(`Server is running at ${PORT}`);
+  logger.info(`Server is running at ${PORT}`);
 });

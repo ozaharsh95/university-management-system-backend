@@ -3,6 +3,7 @@ import { or, ilike, and, sql, getTableColumns, desc, eq } from "drizzle-orm";
 import { user } from "../db/schema/auth.js";
 import { db } from "../db/index.js";
 import { requireAuth } from "../middleware/auth.js";
+import logger, { getErrorMetadata } from "../lib/logger.js";
 
 const router = express.Router();
 
@@ -64,7 +65,7 @@ router.get("/", requireAuth(["admin", "teacher"]), async (req, res) => {
       },
     });
   } catch (error) {
-    console.error(`GET /users error: ${error}`);
+    logger.error("GET /users error", getErrorMetadata(error));
     res.status(500).json({
       error: "Failed to get users",
     });
@@ -97,7 +98,7 @@ router.get("/:id", requireAuth(), async (req, res) => {
       data: userDetail,
     });
   } catch (error) {
-    console.error(`GET /users/:id error: ${error}`);
+    logger.error("GET /users/:id error", getErrorMetadata(error));
     res.status(500).json({
       error: "Failed to get user details",
     });
@@ -160,7 +161,7 @@ router.patch("/:id", requireAuth(["admin"]), async (req, res) => {
       data: updatedUser,
     });
   } catch (error) {
-    console.error(`PATCH /users/:id error: ${error}`);
+    logger.error("PATCH /users/:id error", getErrorMetadata(error));
     res.status(500).json({
       error: "Failed to update user",
     });
