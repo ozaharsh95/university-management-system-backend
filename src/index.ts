@@ -39,21 +39,21 @@ app.use(
 
 app.use(requestLogger);
 
-app.all("/auth/*splat", toNodeHandler(auth));
+app.all("/api/auth/*splat", toNodeHandler(auth));
 
 app.use(express.json());
 app.use(sessionMiddleware);
 // app.use(securityMiddleware);
 
-app.use("/subjects", subjectRouter);
-app.use("/users", userRouter);
-app.use("/classes", classRouter);
-app.use("/stats/admin", statsRouter);
-app.use("/stats/teacher", teacherStatsRouter);
-app.use("/stats/student", studentStatsRouter);
-app.use("/announcements", announcementsRouter);
-app.use("/departments", departmentsRouter);
-app.use("/enrollments", enrollmentsRouter);
+app.use("/api/subjects", subjectRouter);
+app.use("/api/users", userRouter);
+app.use("/api/classes", classRouter);
+app.use("/api/stats/admin", statsRouter);
+app.use("/api/stats/teacher", teacherStatsRouter);
+app.use("/api/stats/student", studentStatsRouter);
+app.use("/api/announcements", announcementsRouter);
+app.use("/api/departments", departmentsRouter);
+app.use("/api/enrollments", enrollmentsRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello welcome !!!");
