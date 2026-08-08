@@ -40,6 +40,7 @@ app.use(
 app.use(requestLogger);
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
+app.all("/auth/*splat", toNodeHandler(auth));
 
 app.use(express.json());
 app.use(sessionMiddleware);
