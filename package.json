@@ -19,20 +19,20 @@
     "@arcjet/inspect": "^1.6.1",
     "@arcjet/node": "^1.6.1",
     "@neondatabase/serverless": "^1.1.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.0.1",
     "apminsight": "^5.5.0",
     "better-auth": "^1.6.23",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
     "express": "^5.2.1",
+    "typescript": "^6.0.3",
     "winston": "^3.19.0"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6",
-    "@types/node": "^26.0.1",
     "drizzle-kit": "^0.31.10",
-    "tsx": "^4.22.4",
-    "typescript": "^6.0.3"
+    "tsx": "^4.22.4"
   }
 }
