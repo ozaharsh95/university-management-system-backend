@@ -1,5 +1,5 @@
-import AgentAPI from "apminsight";
 if (!process.env.VERCEL) {
+  const AgentAPI = (await import("apminsight")).default;
   AgentAPI.config();
 }
 
