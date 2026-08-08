@@ -29,10 +29,10 @@
     "drizzle-orm": "^0.45.2",
     "express": "^5.2.1",
     "typescript": "^6.0.3",
-    "winston": "^3.19.0"
+    "winston": "^3.19.0",
+    "tsx": "^4.22.4"
   },
   "devDependencies": {
-    "drizzle-kit": "^0.31.10",
-    "tsx": "^4.22.4"
+    "drizzle-kit": "^0.31.10"
   }
 }
