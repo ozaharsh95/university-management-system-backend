@@ -1,5 +1,7 @@
 import AgentAPI from "apminsight";
-AgentAPI.config();
+if (!process.env.VERCEL) {
+  AgentAPI.config();
+}
 
 import express from "express";
 import cors from "cors";
@@ -59,6 +61,10 @@ app.get("/", (req, res) => {
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  logger.info(`Server is running at ${PORT}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    logger.info(`Server is running at ${PORT}`);
+  });
+}
+
+export default app;
